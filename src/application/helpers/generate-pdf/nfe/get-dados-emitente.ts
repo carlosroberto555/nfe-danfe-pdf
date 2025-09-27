@@ -32,20 +32,28 @@ export async function getDadosEmitente({
   ide,
   folha
 }: GeneratePdf.InputDadosEmitente): Promise<void> {
+  // Desenhar retângulo arredondado da seção principal
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y + 15.25, larguraDoFormulario, 130.45, 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
+
+  // Manter apenas as linhas internas necessárias (caixa pequena do tipo de NF)
   linhaHorizontal({ x1: 317, x2: -254.7, y: y + 53.1, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaHorizontal({ x1: 317, x2: -254.7, y: y + 72.9, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 53.1, y2: y + 72.9, x: 317.4, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 53.1, y2: y + 72.9, x: 331.55, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 15.25, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+
+  // Manter divisórias horizontais internas
   linhaHorizontal({ x1: 340.05, x2: 0, y: y + 60.5, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaHorizontal({ x1: 340.05, x2: 0, y: y + 83.1, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaHorizontal({ x1: 0, x2: 0, y: y + 105.9, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaHorizontal({ x1: 0, x2: 0, y: y + 125.7, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 145.7, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 15.25, y2: y + 145.7, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+
+  // Manter divisórias verticais internas
   linhaVertical({ y1: y + 15.25, y2: y + 105.7, x: 240.75, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 15.25, y2: y + 125.7, x: 340.05, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 15.25, y2: y + 145.7, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 125.7, y2: y + 145.7, x: 195.55, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 125.7, y2: y + 145.7, x: 391, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   titulo({

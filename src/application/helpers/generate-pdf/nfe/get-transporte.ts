@@ -25,11 +25,14 @@ export function getTransporte({
   larguraDoFormulario,
   transp
 }: GeneratePdf.InputTransporte): number {
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 8, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 28, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 48, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 68, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 8, y2: y + 68, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+  // Desenhar retângulo arredondado da seção de transporte primeiro
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y + 8, larguraDoFormulario, 60, 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
+
+  // Manter apenas linhas verticais internas e linhas horizontais completas internas
   linhaVertical({ y1: y + 8, y2: y + 28, x: 170, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 8, y2: y + 28, x: 346, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 8, y2: y + 48, x: 434, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
@@ -39,7 +42,10 @@ export function getTransporte({
   linhaVertical({ y1: y + 48, y2: y + 68, x: 156.6, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 48, y2: y + 68, x: 357, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 48, y2: y + 68, x: 473.3, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 8, y2: y + 68, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+
+  // Linhas horizontais internas completas (mas não nas bordas superior/inferior)
+  linhaHorizontal({ x1: 0, x2: 0, y: y + 28, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  linhaHorizontal({ x1: 0, x2: 0, y: y + 48, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   secao({ doc, value: 'TRANSPORTADOR / VOLUMES TRANSPORTADOS', x: 1.5, y, largura: 0, ajusteX, ajusteY, margemEsquerda, margemTopo });
   titulo({ value: 'NOME / RAZÃO SOCIAL', x: 1.5, y: y + 9.5, largura: 166.5, ajusteX, ajusteY, doc, margemEsquerda, margemTopo });
   campo({

@@ -16,11 +16,16 @@ export function getMenuItens({
   finalEspacoDet,
   larguraDoFormulario
 }: GeneratePdf.InputMenuItens): number {
-  linhaHorizontal({ x1: -0.5, x2: 0.5, y: y + 17, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: -0.5, x2: 0.5, y: y + 32, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: -0.5, x2: 0.5, y: finalEspacoDet, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  // Desenhar retângulo arredondado da seção de produtos/serviços
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y + 17, larguraDoFormulario, finalEspacoDet - (y + 17), 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
 
-  linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+  // Manter apenas a divisória horizontal do cabeçalho e as divisórias verticais internas
+  linhaHorizontal({ x1: -0.5, x2: 0.5, y: y + 32, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 53, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 236.5, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 267, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
@@ -34,7 +39,6 @@ export function getMenuItens({
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 508, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 533.5, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: 557, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 17, y2: finalEspacoDet, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
 
   secao({ doc, value: 'DADOS DOS PRODUTOS / SERVIÇOS', x: 1.5, y: y + 8, largura: 0, ajusteX, ajusteY, margemEsquerda, margemTopo });
 

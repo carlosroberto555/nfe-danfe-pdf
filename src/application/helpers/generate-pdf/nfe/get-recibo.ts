@@ -21,15 +21,17 @@ export function getRecibo({
   total,
   ide
 }: GeneratePdf.InputRecibo): number {
-  linhaHorizontal({ x1: 0, x2: 0, y, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: -110.5, y: y + 28.3, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 51.1, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  // Desenhar retângulo arredondado da seção de recibo
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y, larguraDoFormulario, 51.1, 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
 
-  linhaVertical({ y1: y, y2: y + 51.1, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 28.3, y2: y + 51.1, x: 99.2, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y, y2: y + 51.1, x: 476, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y, y2: y + 51.1, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y, y2: y + 51.1, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+  // Manter apenas linhas internas (não nas bordas externas)
+  linhaHorizontal({ x1: 3, x2: -113.5, y: y + 28.3, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  linhaVertical({ y1: y + 28.3, y2: y + 48.1, x: 99.2, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
+  linhaVertical({ y1: y + 3, y2: y + 48.1, x: 476, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
 
   normal({
     doc,
