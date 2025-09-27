@@ -18,17 +18,21 @@ export function getImposto({
   larguraDoFormulario,
   total
 }: GeneratePdf.InputImposto): number {
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 16.2, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  // Desenhar retângulo arredondado da seção de impostos
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y + 16.2, larguraDoFormulario, 40, 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
+
+  // Manter apenas divisórias internas
   linhaHorizontal({ x1: 0, x2: 0, y: y + 36.2, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 56.2, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7 * 2 + 0.3, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7 * 3 + 0.4, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7 * 4 + 0.4, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7 * 5 + 0.6, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: 87.7 * 5 + 51.8, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 16.2, y2: y + 56.2, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
 
   secao({ doc, value: 'CÁLCULO DO IMPOSTO', x: 1.5, y: y + 8.7, largura: 0, ajusteX, ajusteY, margemEsquerda, margemTopo });
 

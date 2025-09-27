@@ -27,18 +27,22 @@ export function getDestinatarioRemetente({
   dest,
   ide
 }: GeneratePdf.InputRemetenteDestinatario): number {
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 9, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
+  // Desenhar retângulo arredondado da seção destinatário/remetente
+  doc
+    .lineWidth(0.5)
+    .roundedRect(margemEsquerda + ajusteX, margemTopo + ajusteY + y + 9, larguraDoFormulario, 60, 3)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
+
+  // Manter apenas divisórias internas
   linhaHorizontal({ x1: 0, x2: 0, y: y + 29, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
   linhaHorizontal({ x1: 0, x2: 0, y: y + 49, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
-  linhaHorizontal({ x1: 0, x2: 0, y: y + 69, doc, ajusteX, ajusteY, margemDireita, margemEsquerda, margemTopo });
 
-  linhaVertical({ y1: y + 9.2, y2: y + 69, x: 0, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 9.2, y2: y + 29, x: 357.1, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 29.2, y2: y + 69, x: 274.9, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 49.2, y2: y + 69, x: 297.6, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 29.2, y2: y + 69, x: 396.75, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
   linhaVertical({ y1: y + 9.2, y2: y + 69, x: 493.1, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
-  linhaVertical({ y1: y + 9.2, y2: y + 69, x: larguraDoFormulario, doc, ajusteX, ajusteY, margemEsquerda, margemTopo });
 
   secao({ doc, value: 'DESTINATÁRIO / REMETENTE', x: 1.5, y: y + 0.9, largura: 0, ajusteX, ajusteY, margemEsquerda, margemTopo });
 
@@ -84,7 +88,7 @@ export function getDestinatarioRemetente({
 
   titulo({ value: 'ENDEREÇO', x: 1.5, y: y + 30, largura: 272, ajusteX, ajusteY, doc, margemEsquerda, margemTopo });
   campo({
-    value: dest.enderDest?.xLgr && dest.enderDest?.nro ? `${dest.enderDest.xLgr}, ${dest.enderDest.nro}` : dest.enderDest?.xLgr ?? '',
+    value: dest.enderDest?.xLgr && dest.enderDest?.nro ? `${dest.enderDest.xLgr}, ${dest.enderDest.nro}` : (dest.enderDest?.xLgr ?? ''),
     x: 1.5,
     y: y + 38,
     largura: 272,

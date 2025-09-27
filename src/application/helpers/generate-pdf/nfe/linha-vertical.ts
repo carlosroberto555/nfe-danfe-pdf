@@ -5,5 +5,10 @@ export function linhaVertical({ ajusteX, ajusteY, doc, margemEsquerda, margemTop
   y1 = margemTopo + ajusteY + y1;
   y2 = margemTopo + ajusteY + y2;
 
-  doc.moveTo(x, y1).lineTo(x, y2).stroke();
+  doc
+    .lineWidth(0.5) // Linha mais fina para elegância
+    .moveTo(x, y1)
+    .lineTo(x, y2)
+    .stroke()
+    .lineWidth(1); // Restaurar espessura padrão
 }

@@ -23,7 +23,8 @@ export async function criaLayout({
   larguraDoFormulario,
   margemDireita,
   folha,
-  cancelada
+  cancelada,
+  textoRodape
 }: GeneratePdf.InputCriaLayout): Promise<void> {
   const { dest, emit, ide, infAdic, total, transp, cobr } = nf.NFe.infNFe;
   let y = 0;
@@ -150,7 +151,8 @@ export async function criaLayout({
       margemEsquerda,
       margemTopo,
       finalEspacoDet,
-      extra: { vTotTrib: total.ICMSTot.vTotTrib, emailDest: dest.email }
+      extra: { vTotTrib: total.ICMSTot.vTotTrib, emailDest: dest.email },
+      textoRodape
     });
   }
 

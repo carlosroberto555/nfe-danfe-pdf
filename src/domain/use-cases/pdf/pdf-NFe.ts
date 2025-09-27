@@ -26,7 +26,8 @@ export async function pdfNFe(nf: NFeProc, opcoes?: OpcoesPDF): Promise<PDFKit.PD
     margemEsquerda,
     margemTopo,
     pathLogo: opcoes?.pathLogo,
-    cancelada: opcoes?.cancelada
+    cancelada: opcoes?.cancelada,
+    textoRodape: opcoes?.textoRodape
   });
 
   const paginas = doc.bufferedPageRange();

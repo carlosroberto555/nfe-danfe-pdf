@@ -17,9 +17,20 @@ export function linhaHorizontal({
   x2 = margemDireita + ajusteX + x2;
 
   if (tracejada) {
-    doc.moveTo(x1, y).lineTo(x2, y).dash(3, { space: 5 }).stroke();
-    doc.undash();
+    doc
+      .lineWidth(0.5) // Linha mais fina para elegância
+      .moveTo(x1, y)
+      .lineTo(x2, y)
+      .dash(3, { space: 5 })
+      .stroke()
+      .undash()
+      .lineWidth(1); // Restaurar espessura padrão
   } else {
-    doc.moveTo(x1, y).lineTo(x2, y).stroke();
+    doc
+      .lineWidth(0.5) // Linha mais fina para elegância
+      .moveTo(x1, y)
+      .lineTo(x2, y)
+      .stroke()
+      .lineWidth(1); // Restaurar espessura padrão
   }
 }

@@ -17,7 +17,8 @@ export async function gerarItens({
   margemDireita,
   larguraDoFormulario,
   pathLogo,
-  cancelada
+  cancelada,
+  textoRodape
 }: GeneratePdf.InputCriaMargem): Promise<void> {
   let folha = 0;
   await criaLayout({
@@ -31,7 +32,8 @@ export async function gerarItens({
     margemTopo,
     pathLogo,
     folha,
-    cancelada
+    cancelada,
+    textoRodape
   });
 
   let maiorY = doc.y;
@@ -47,8 +49,8 @@ export async function gerarItens({
         ? `\n${rastroInfo.map(formatRastro).join('\n')}`
         : ''
       : rastroInfo?.nLote
-      ? formatRastro(rastroInfo)
-      : '';
+        ? formatRastro(rastroInfo)
+        : '';
 
     function renderizarLinha(pdf: any): number {
       const y = maiorY + 2;
@@ -291,7 +293,8 @@ export async function gerarItens({
         margemTopo,
         pathLogo,
         folha,
-        cancelada
+        cancelada,
+        textoRodape
       });
       maiorY = doc.y;
     } else {
