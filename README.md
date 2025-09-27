@@ -57,15 +57,34 @@ pnpm add nfe-danfe-pdf
 import { gerarPDF } from 'nfe-danfe-pdf';
 import fs from 'fs';
 
-// Carregando XML da NFe
-const xmlContent = fs.readFileSync('./nota-fiscal.xml', 'utf8');
+async function main() {
+  try {
+    // Carregando XML da NFe
+    const xmlContent = fs.readFileSync('./nota-fiscal.xml', 'utf8');
 
-// Gerando PDF
-const pdfDoc = await gerarPDF(xmlContent);
+    // Gerando PDF
+    const pdfDoc = await gerarPDF(xmlContent);
 
-// Salvando arquivo
-pdfDoc.pipe(fs.createWriteStream('./danfe.pdf'));
-pdfDoc.end();
+    // Salvando arquivo
+    const writeStream = fs.createWriteStream('./danfe.pdf');
+    pdfDoc.pipe(writeStream);
+
+    // Aguardar finalização do arquivo
+    await new Promise<void>((resolve, reject) => {
+      writeStream.on('finish', () => {
+        console.log('PDF gerado com sucesso!');
+        resolve();
+      });
+
+      writeStream.on('error', reject);
+      pdfDoc.on('error', reject);
+    });
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+}
+
+main();
 ```
 
 ### **Exemplo Avançado**
@@ -79,7 +98,8 @@ const xmlContent = fs.readFileSync('./nfe.xml', 'utf8');
 // Opções personalizadas
 const opcoes = {
   pathLogo: './assets/logo-empresa.png', // Logo da empresa
-  cancelada: false // Nota não cancelada
+  cancelada: false, // Nota não cancelada
+  textoRodape: 'Meu Sistema Danfe' // Texto personalizado no rodapé
 };
 
 const pdfDoc = await gerarPDF(xmlContent, opcoes);
@@ -111,7 +131,40 @@ pdfDoc.end();
 type OpcoesPDF = {
   pathLogo?: string; // Caminho para logo da empresa
   cancelada?: boolean; // Marcar nota como cancelada
+  textoRodape?: string; // Texto personalizado no rodapé do documento
 };
+```
+
+#### **Detalhes dos Parâmetros:**
+
+- **`pathLogo`**: Caminho para arquivo de imagem da logo da empresa (PNG, JPG, etc.)
+- **`cancelada`**: Define se a nota deve ser marcada visualmente como cancelada
+- **`textoRodape`**: Texto personalizado que aparece no rodapé direito do documento (ex: "Meu Sistema Danfe")
+
+#### **Exemplo com Rodapé Personalizado:**
+
+```typescript
+import { gerarPDF } from 'nfe-danfe-pdf';
+import fs from 'fs';
+
+const xmlContent = fs.readFileSync('./nfe.xml', 'utf8');
+
+// Opções com texto personalizado no rodapé
+const opcoes = {
+  pathLogo: './assets/logo-empresa.png',
+  cancelada: false,
+  textoRodape: 'Meu Sistema Danfe' // Texto que aparece no canto inferior direito
+};
+
+const pdfDoc = await gerarPDF(xmlContent, opcoes);
+pdfDoc.pipe(fs.createWriteStream('./danfe-com-rodape.pdf'));
+```
+
+**💡 Resultado Visual do Rodapé:**
+
+```
+Impresso em 27/09/2025 às 15:30:45                    Meu Sistema Danfe
+    ↑ (lado esquerdo)                                      ↑ (lado direito)
 ```
 
 ---
@@ -125,6 +178,7 @@ type OpcoesPDF = {
 - ✅ Tabela de itens com colunas alinhadas
 - ✅ Informações fiscais destacadas
 - ✅ Dados adicionais com altura dinâmica
+- ✅ **Rodapé personalizado** com data/hora e texto customizável
 
 ### **Formatações Automáticas**
 
@@ -187,8 +241,8 @@ const app = express();
 
 app.post('/gerar-danfe', async (req, res) => {
   try {
-    const { xml, pathLogo } = req.body;
-    const pdfDoc = await gerarPDF(xml, { pathLogo });
+    const { xml, pathLogo, textoRodape } = req.body;
+    const pdfDoc = await gerarPDF(xml, { pathLogo, textoRodape });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="danfe.pdf"');
@@ -211,9 +265,14 @@ import { gerarPDF } from 'nfe-danfe-pdf';
 @Controller('danfe')
 export class DanfeController {
   @Post('gerar')
-  async gerarDanfe(@Body('xml') xml: string, @Res() res: Response) {
+  async gerarDanfe(
+    @Body('xml') xml: string,
+    @Body('pathLogo') pathLogo?: string,
+    @Body('textoRodape') textoRodape?: string,
+    @Res() res: Response
+  ) {
     try {
-      const pdfDoc = await gerarPDF(xml);
+      const pdfDoc = await gerarPDF(xml, { pathLogo, textoRodape });
 
       res.setHeader('Content-Type', 'application/pdf');
       pdfDoc.pipe(res);
@@ -251,7 +310,8 @@ const DanfeGenerator: React.FC<DanfeGeneratorProps> = ({ xmlContent }) => {
         '/api/gerar-danfe',
         {
           xml: xmlContent,
-          pathLogo: '/assets/logo.png'
+          pathLogo: '/assets/logo.png',
+          textoRodape: 'Meu Sistema Danfe'
         },
         {
           responseType: 'blob' // Importante para receber PDF
@@ -510,10 +570,10 @@ export default function DanfeButton({ xmlContent, logoPath }: DanfeButtonProps) 
         },
         body: JSON.stringify({
           xml: xmlContent,
-          pathLogo: logoPath
+          pathLogo: logoPath,
+          textoRodape: 'Meu Sistema Danfe'
         })
       });
-
       if (!response.ok) {
         throw new Error('Erro ao gerar DANFE');
       }
