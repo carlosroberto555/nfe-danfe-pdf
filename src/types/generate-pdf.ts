@@ -13,6 +13,7 @@ import type { NFeProc, ProtNFe } from './nfe-proc';
 export type OpcoesPDF = {
   pathLogo?: string;
   cancelada?: boolean;
+  textoRodape?: string;
 };
 
 export declare namespace GeneratePdf {
@@ -49,6 +50,7 @@ export declare namespace GeneratePdf {
     nf: NFeProc;
     pathLogo?: string;
     cancelada?: boolean;
+    textoRodape?: string;
   };
   type InputCriaLayout = {
     doc: PDFKit.PDFDocument;
@@ -62,6 +64,7 @@ export declare namespace GeneratePdf {
     folha: number;
     pathLogo?: string;
     cancelada?: boolean;
+    textoRodape?: string;
   };
   type InputTitulo = {
     x: number;
@@ -269,5 +272,6 @@ export declare namespace GeneratePdf {
       emailDest?: string;
     };
     finalEspacoDet: number;
+    textoRodape?: string;
   };
 }
