@@ -1,0 +1,174 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <protNFe>
+    <infProt>
+      <dhRecbto>2024-01-04T10:00:38-04:00</dhRecbto>
+      <chNFe>55555555555555555555555555555555555555555550</chNFe>
+      <xMotivo>Autorizado o uso da NF-e</xMotivo>
+      <cStat>100</cStat>
+    </infProt>
+  </protNFe>
+  <NFe>
+    <infNFe Id="NFe55555555555555555555555555555555555555555550" versao="4.00">
+      <infAdic>
+        <infCpl></infCpl>
+      </infAdic>
+      <infRespTec>
+        <fone>(99) 99999-9999</fone>
+        <CNPJ>99999999999962</CNPJ>
+        <xContato>Bebedor de Cafe Senior</xContato>
+      </infRespTec>
+      <det>
+        <nItem>1</nItem>
+        <prod>
+          <xPed>999999999</xPed>
+          <cEAN>SEM GTIN</cEAN>
+          <cProd>3</cProd>
+          <qCom>32140.0000</qCom>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <vUnTrib>0.00</vUnTrib>
+          <qTrib>32140.0000</qTrib>
+          <vProd>0.00</vProd>
+          <xProd>Cafezinho Coado</xProd>
+          <vUnCom>0.00</vUnCom>
+          <indTot>1</indTot>
+          <uTrib>KG</uTrib>
+          <NCM>10019000</NCM>
+          <uCom>KG</uCom>
+          <CFOP>6102</CFOP>
+        </prod>
+        <imposto>
+          <vTotTrib>0.00</vTotTrib>
+          <ICMS>
+            <ICMS20>
+              <modBC>3</modBC>
+              <motDesICMS>9</motDesICMS>
+              <pRedBC>30.0000</pRedBC>
+              <orig>0</orig>
+              <CST>20</CST>
+              <vBC>0.00</vBC>
+              <vICMS>0.00</vICMS>
+              <vICMSDeson>0.00</vICMSDeson>
+              <pICMS>0.00</pICMS>
+            </ICMS20>
+          </ICMS>
+          <COFINS>
+            <COFINSNT>
+              <CST>09</CST>
+            </COFINSNT>
+          </COFINS>
+          <PIS>
+            <PISNT>
+              <CST>09</CST>
+            </PISNT>
+          </PIS>
+        </imposto>
+      </det>
+      <total>
+        <ICMSTot>
+          <vCOFINS>0.00</vCOFINS>
+          <vBCST>0.00</vBCST>
+          <vICMSDeson>0.00</vICMSDeson>
+          <vProd>0.00</vProd>
+          <vSeg>0.00</vSeg>
+          <vFCP>0.00</vFCP>
+          <vFCPST>0.00</vFCPST>
+          <vNF>0.00</vNF>
+          <vTotTrib>0.00</vTotTrib>
+          <vPIS>0.00</vPIS>
+          <vIPIDevol>0.00</vIPIDevol>
+          <vBC>0.00</vBC>
+          <vST>0.00</vST>
+          <vICMS>0.00</vICMS>
+          <vII>0.00</vII>
+          <vFCPSTRet>0.00</vFCPSTRet>
+          <vDesc>0.00</vDesc>
+          <vOutro>0.00</vOutro>
+          <vIPI>0.00</vIPI>
+          <vFrete>0.00</vFrete>
+        </ICMSTot>
+      </total>
+      <Id>NFe55555555555555555555555555555555555555555550</Id>
+      <ide>
+        <tpNF>1</tpNF>
+        <mod>55</mod>
+        <indPres>1</indPres>
+        <tpImp>1</tpImp>
+        <nNF>1</nNF>
+        <cMunFG>3550308</cMunFG>
+        <procEmi>0</procEmi>
+        <finNFe>1</finNFe>
+        <dhEmi>2024-01-04T10:00:24-04:00</dhEmi>
+        <tpAmb>1</tpAmb>
+        <indFinal>1</indFinal>
+        <idDest>2</idDest>
+        <tpEmis>1</tpEmis>
+        <cDV>2</cDV>
+        <cUF>35</cUF>
+        <serie>120</serie>
+        <natOp>Venda mercadoria adquiria ou recebida de terceiros</natOp>
+        <cNF>15320898</cNF>
+        <verProc>SAP NFE 4.00</verProc>
+      </ide>
+      <autXML>
+        <CNPJ>99999999999962</CNPJ>
+      </autXML>
+      <emit>
+        <CNAE>1061300</CNAE>
+        <xNome>MEU DANFE - Gerador de Danfe e Conversor XML</xNome>
+        <IM>99999</IM>
+        <CRT>3</CRT>
+        <CNPJ>99999999999962</CNPJ>
+        <enderEmit>
+          <fone>(99) 99999-9999</fone>
+          <UF>SP</UF>
+          <xPais>Brasil</xPais>
+          <cPais>1058</cPais>
+          <xLgr>Rua Principal</xLgr>
+          <nro>999</nro>
+          <xBairro>Centro</xBairro>
+          <xMun>Sao Paulo</xMun>
+          <cMun>3550308</cMun>
+          <CEP>99999999</CEP>
+        </enderEmit>
+        <IE>9999999999</IE>
+      </emit>
+      <dest>
+        <xNome>CAFE E PAO DE QUEIJO INFINITO S/A</xNome>
+        <CNPJ>99999999999962</CNPJ>
+        <enderDest>
+          <fone>(99) 99999-9999</fone>
+          <UF>SP</UF>
+          <xPais>Brasil</xPais>
+          <cPais>1058</cPais>
+          <xLgr>Rua Principal</xLgr>
+          <nro>999</nro>
+          <xBairro>Centro</xBairro>
+          <xMun>Sao Paulo</xMun>
+          <cMun>3550308</cMun>
+          <CEP>99999999</CEP>
+        </enderDest>
+        <IE>9999999999</IE>
+        <indIEDest>1</indIEDest>
+      </dest>
+      <transp>
+        <modFrete>1</modFrete>
+        <vol>
+          <pesoL>32140.000</pesoL>
+          <esp>KG</esp>
+          <qVol>32140</qVol>
+          <pesoB>32140.000</pesoB>
+        </vol>
+        <transporta>
+          <xNome>LADEIRA ABAIXO TRANSPORTES S/A</xNome>
+          <UF>SP</UF>
+          <xEnder>Rua Principal</xEnder>
+          <xMun>Sao Paulo</xMun>
+          <CNPJ>99999999999962</CNPJ>
+          <IE>9999999999</IE>
+        </transporta>
+      </transp>
+    </infNFe>
+  </NFe>
+  <versao>4.00</versao>
+</nfeProc>
