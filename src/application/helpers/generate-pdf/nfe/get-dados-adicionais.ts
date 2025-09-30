@@ -11,7 +11,70 @@ import { secao } from './secao';
 import { titulo } from './titulo';
 
 /**
- * Quebra texto longo em linhas de forma inteligente, respeitando palavras e espaço disponível
+ * Quebra texto baseado na largura REAL da célula (não em caracteres estimados)
+ * Usa doc.widthOfString() para precisão absoluta
+ */
+function quebrarTextoPorLargura(doc: PDFKit.PDFDocument, texto: string, larguraMaxima: number, tamanhoFonte: number = 6): string[] {
+  const linhas: string[] = [];
+  let textoRestante = texto.trim();
+
+  // Aplicar fonte temporariamente para medição precisa
+  doc.fontSize(tamanhoFonte);
+
+  while (textoRestante.length > 0) {
+    // Verificar se texto completo cabe na largura disponível
+    const larguraCompleta = doc.widthOfString(textoRestante);
+
+    if (larguraCompleta <= larguraMaxima) {
+      linhas.push(textoRestante);
+      break;
+    }
+
+    // Busca binária para encontrar máximo de texto que cabe
+    let inicio = 1;
+    let fim = textoRestante.length;
+    let melhorCorte = 1;
+
+    while (inicio <= fim) {
+      const meio = Math.floor((inicio + fim) / 2);
+      const textoTeste = textoRestante.substring(0, meio);
+      const larguraTeste = doc.widthOfString(textoTeste);
+
+      if (larguraTeste <= larguraMaxima) {
+        melhorCorte = meio;
+        inicio = meio + 1;
+      } else {
+        fim = meio - 1;
+      }
+    }
+
+    // Aplicar quebra inteligente próximo ao ponto ideal
+    let pontoCorte = melhorCorte;
+    const textoParaCorte = textoRestante.substring(0, melhorCorte);
+    const separadores = [' | ', ' - ', ': ', ' ', ',', '.', ';'];
+
+    for (const separador of separadores) {
+      const ultimaPosicao = textoParaCorte.lastIndexOf(separador);
+      if (ultimaPosicao > melhorCorte * 0.7) {
+        pontoCorte = ultimaPosicao + separador.length;
+        break;
+      }
+    }
+
+    // Garantir que não fica vazio
+    if (pontoCorte === 0) {
+      pontoCorte = Math.max(1, melhorCorte);
+    }
+
+    linhas.push(textoRestante.substring(0, pontoCorte).trim());
+    textoRestante = textoRestante.substring(pontoCorte).trim();
+  }
+
+  return linhas;
+}
+
+/**
+ * Função legada mantida para compatibilidade com seção do fisco
  */
 function quebrarTextoInteligente(texto: string, maxCaracteres: number): string[] {
   const linhas: string[] = [];
@@ -23,18 +86,14 @@ function quebrarTextoInteligente(texto: string, maxCaracteres: number): string[]
       break;
     }
 
-    // Encontra o melhor ponto de quebra
     let pontoCorte = maxCaracteres;
     const fatia = textoRestante.substring(0, maxCaracteres);
-
-    // Procura por separadores ideais em ordem de prioridade
     const separadores = [' | ', ' - ', ': ', ' ', ',', '.'];
     let melhorCorte = -1;
 
     for (const separador of separadores) {
       const ultimaOcorrencia = fatia.lastIndexOf(separador);
       if (ultimaOcorrencia > maxCaracteres * 0.7) {
-        // Só aceita se for pelo menos 70% da linha
         melhorCorte = ultimaOcorrencia + separador.length;
         break;
       }
@@ -81,8 +140,11 @@ export function getDadosAdicionais({
   }
 
   // Z04-Z06 - obsCont: Campos de uso livre do contribuinte (0-10 ocorrências)
-  if (infAdic?.obsCont && infAdic.obsCont.length > 0) {
-    infAdic.obsCont.forEach((obs) => {
+  if (infAdic?.obsCont) {
+    // Normalizar obsCont para sempre ser um array
+    const obsContArray = Array.isArray(infAdic.obsCont) ? infAdic.obsCont : [infAdic.obsCont];
+
+    obsContArray.forEach((obs) => {
       if (obs.xCampo && obs.xTexto) {
         informacoesComplementares.push(`${obs.xCampo}: ${cleanInfoComplementar(obs.xTexto)}`);
       }
@@ -99,17 +161,31 @@ export function getDadosAdicionais({
     informacoesComplementares.push(`Email do Destinatário: ${extra.emailDest}`);
   }
 
-  // Calcular altura necessária com base no texto
+  // Calcular altura necessária baseado na largura REAL - métrica precisa
   const textoCompleto = informacoesComplementares.join(' | ');
-  const maxCaracteresPorLinha = 87; // Ajustado para largura MOC Z02 (367px vs 386px anterior)
+  const larguraDisponivel = 365; // MOC Z02: largura exata da célula
   const alturaLinha = 8;
-  const linhasNecessarias = Math.ceil(textoCompleto.length / maxCaracteresPorLinha);
+
+  // Pré-calcular quantas linhas serão necessárias com largura real
+  let linhasNecessarias = 1;
+  if (informacoesComplementares.length > 0) {
+    // Aplicar fonte temporária para medição
+    doc.fontSize(6);
+    const larguraTexto = doc.widthOfString(textoCompleto);
+
+    if (larguraTexto > larguraDisponivel) {
+      // Simular quebra para contar linhas reais
+      const linhasSimuladas = quebrarTextoPorLargura(doc, textoCompleto, larguraDisponivel, 6);
+      linhasNecessarias = linhasSimuladas.length;
+    }
+  }
+
   const alturaTexto = Math.max(1, linhasNecessarias) * alturaLinha;
 
-  // Ajustar altura da seção se necessário (mínimo de espaço para o texto)
+  // Ajustar altura da seção se necessário (código ORIGINAL)
   const alturaMinima = finalEspacoDet + 25 + alturaTexto;
   if (alturaMinima > alturaSecao) {
-    alturaSecao = Math.min(alturaMinima, 850); // Máximo permitido na página
+    alturaSecao = Math.min(alturaMinima, 850); // Valor ORIGINAL
   }
 
   // Desenhar bordas da seção com cantos arredondados
@@ -152,15 +228,18 @@ export function getDadosAdicionais({
     margemTopo
   });
 
-  // Exibir informações complementares com tratamento para textos longos
+  // Exibir informações complementares com quebra PRECISA baseada na largura real
   if (informacoesComplementares.length > 0) {
     const textoCompleto = informacoesComplementares.join(' | ');
-    const maxCaracteresPorLinha = 87; // MOC Z02: 12,95 cm = ~367px
-    const alturaLinha = 8; // Altura de cada linha de texto
+    const larguraDisponivel = 365; // MOC Z02: largura exata da célula
+    const alturaLinha = 8;
 
-    // Se o texto é muito longo, quebre em múltiplas linhas
-    if (textoCompleto.length > maxCaracteresPorLinha) {
-      const linhas = quebrarTextoInteligente(textoCompleto, maxCaracteresPorLinha);
+    // Verificar se precisa quebrar usando largura REAL
+    doc.fontSize(6); // Aplicar fonte para medição
+    const larguraTexto = doc.widthOfString(textoCompleto);
+
+    if (larguraTexto > larguraDisponivel) {
+      const linhas = quebrarTextoPorLargura(doc, textoCompleto, larguraDisponivel, 6);
 
       linhas.forEach((linha, index) => {
         normal({
@@ -178,7 +257,7 @@ export function getDadosAdicionais({
         });
       });
     } else {
-      // Para textos curtos, usa o método original
+      // Para textos que cabem em uma linha
       normal({
         doc,
         value: textoCompleto,
@@ -198,26 +277,33 @@ export function getDadosAdicionais({
   // Z07-Z09 - obsFisco: Campos de uso livre do Fisco na seção "RESERVADO AO FISCO"
   const informacoesFisco: string[] = [];
 
-  if (infAdic?.obsFisco && infAdic.obsFisco.length > 0) {
-    infAdic.obsFisco.forEach((obs) => {
+  if (infAdic?.obsFisco) {
+    // Normalizar obsFisco para sempre ser um array
+    const obsFiscoArray = Array.isArray(infAdic.obsFisco) ? infAdic.obsFisco : [infAdic.obsFisco];
+
+    obsFiscoArray.forEach((obs) => {
       if (obs.xCampo && obs.xTexto) {
         informacoesFisco.push(`${obs.xCampo}: ${cleanInfoComplementar(obs.xTexto)}`);
       }
     });
 
-    // Exibir informações do fisco na coluna direita com quebra inteligente
+    // Exibir informações do fisco na coluna direita com quebra PRECISA
     const textoFisco = informacoesFisco.join(' | ');
-    const maxCaracteresFisco = 50; // MOC Z03: 7,62 cm = ~215px (aumentado de 45 para 50)
+    const larguraFisco = 213; // MOC Z03: largura exata da coluna direita
 
-    if (textoFisco.length > maxCaracteresFisco) {
-      const linhasFisco = quebrarTextoInteligente(textoFisco, maxCaracteresFisco);
+    // Verificar se precisa quebrar usando largura REAL
+    doc.fontSize(6); // Aplicar fonte para medição
+    const larguraTextoFisco = doc.widthOfString(textoFisco);
+
+    if (larguraTextoFisco > larguraFisco) {
+      const linhasFisco = quebrarTextoPorLargura(doc, textoFisco, larguraFisco, 6);
 
       linhasFisco.forEach((linha, index) => {
         normal({
           doc,
           value: linha,
           x: 369, // MOC Z03: posição após divisória em 367px
-          y: finalEspacoDet + 17.5 + index * alturaLinha,
+          y: finalEspacoDet + 17.5 + index * 8,
           largura: 213, // MOC Z03: 7,62 cm = ~215px - margem
           alinhamento: 'left',
           tamanho: 6,
@@ -245,8 +331,8 @@ export function getDadosAdicionais({
   }
 
   // Rodapé: Data/hora de geração e texto personalizado
-  const alturaRodape = 8; // Espaço reduzido para o rodapé
-  const yRodape = finalEspacoDet + 61.5 + alturaRodape; // Posicionado mais próximo da seção dados adicionais
+  const alturaRodape = 8; // Valor ORIGINAL
+  const yRodape = finalEspacoDet + 61.5 + alturaRodape; // Posicionamento ORIGINAL
 
   // Data e hora atual da geração do DANFE (lado esquerdo)
   const dataHoraAtual = format(new Date(), "dd/MM/yyyy 'às' HH:mm:ss", { locale: ptBR });
