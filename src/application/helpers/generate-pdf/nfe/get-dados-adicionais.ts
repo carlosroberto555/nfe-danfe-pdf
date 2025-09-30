@@ -4,7 +4,6 @@ import { cleanInfoComplementar } from '../../../../domain/use-cases/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { italico } from './italico';
-import { linhaHorizontal } from './linha-horizontal';
 import { linhaVertical } from './linha-vertical';
 import { normal } from './normal';
 import { secao } from './secao';
