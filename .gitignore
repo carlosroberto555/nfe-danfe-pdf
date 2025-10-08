@@ -3,5 +3,4 @@ dist/
 lib/
 .env
 danfe.pdf
-*-lock.json
 *-lock.yaml
