@@ -4,7 +4,7 @@
     "module": "CommonJS",
     "resolveJsonModule": true,
     "declaration": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "outDir": "./lib",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -23,6 +23,5 @@ export function negrito({
     .text(value, margemEsquerda + ajusteX + x, margemTopo + ajusteY + y, {
       width: largura,
       align: alignValue,
-      lineGap: -1.5
     });
 }

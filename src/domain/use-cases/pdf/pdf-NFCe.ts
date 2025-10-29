@@ -4,8 +4,53 @@ import QRCode from 'qrcode';
 import { loadFontsNFCe } from '../../../application/helpers/generate-pdf/nfe/load-fontes';
 import { negrito } from '../../../application/helpers/generate-pdf/nfe/negrito';
 import { normal } from '../../../application/helpers/generate-pdf/nfe/normal';
-import type { NFeProc } from '../../../types';
+import type { NFe, NFeProc } from '../../../types';
 import { formatCnpj, formatCpf, formatNumber, formatPostalCode } from '../utils';
+import { MoneyMaskBR } from '../../../utils';
+
+function calcularAlturaDinamica(NFe: NFe) {
+  const { det, pag, infAdic } = NFe.infNFe;
+  let altura = 0;
+
+  // Margem + cabeçalho da empresa e título
+  altura += 90;
+
+  // Itens (cada produto ocupa ~7pt + espaçamento)
+  altura += det.length * 8 + 10;
+
+  // Totais
+  altura += 60;
+
+  // Formas de pagamento
+  altura += (pag.detPag?.length ?? 0) * 8 + 15;
+
+  // QR Code + chave + dados do cliente
+  altura += 200;
+
+  // Observações (depende do tamanho do texto)
+  const infCpl = infAdic?.infCpl ?? "";
+  const linhasObs = Math.ceil(infCpl.length / 70); // ~70 chars por linha
+  altura += linhasObs * 8;
+
+  // Margem final
+  altura += 30;
+
+  return altura;
+}
+
+function linha(doc: PDFKit.PDFDocument) {
+  doc.lineWidth(0.5);
+  doc.strokeColor('#555');
+
+  const margin: number = Number(doc.options.margins!.left) || 0;
+  const width: number = Number(doc.options.size?.[0]) || 210;
+
+  doc.moveTo(margin, doc.y + 2)
+   .lineTo(width - margin, doc.y + 2)
+   .stroke();
+
+  doc.y += 4;
+}
 
 export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PDFDocument> {
   const { NFe, protNFe } = nf;
@@ -14,8 +59,10 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   const larguraPagina = 201;
   const margemPadrao = 2.5;
 
+  const altura = calcularAlturaDinamica(NFe);
+
   const doc = new PDFKit({
-    size: [larguraPagina, 1000],
+    size: [larguraPagina, altura],
     margins: {
       top: margemPadrao,
       bottom: 0,
@@ -23,6 +70,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
       right: margemPadrao
     }
   });
+
   loadFontsNFCe(doc);
 
   negrito({
@@ -31,7 +79,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     x: 0,
     y: doc.y,
     largura: larguraPagina,
-    tamanho: 10,
+    tamanho: 9,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
@@ -43,12 +91,15 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     x: 0,
     y: doc.y,
     largura: larguraPagina,
-    tamanho: 10,
+    tamanho: 9,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0
   });
+
+  doc.y += 4;
+
   normal({
     doc,
     value: `${emit.enderEmit.xLgr}, ${emit.enderEmit.nro}${emit.enderEmit.xCpl !== undefined ? ' ' + emit.enderEmit.xCpl : ''}. ${
@@ -66,7 +117,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y += 5;
   negrito({
     doc,
-    value: 'Documento Auxiliar da Nota Fiscal de Consumidor Eletronica',
+    value: 'Documento Auxiliar da Nota Fiscal de Consumidor Eletrônica',
     x: 0,
     y: doc.y,
     largura: larguraPagina,
@@ -76,86 +127,94 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     margemEsquerda: 0,
     margemTopo: 0
   });
+
   doc.y += 5;
+
+  linha(doc);
+
   let posicao = doc.y;
-  negrito({
+
+  normal({
     doc,
     value: 'CODIGO',
     x: 0,
     y: posicao,
     largura: 26.5,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: margemPadrao,
     margemTopo: 0,
     alinhamento: 'left'
   });
-  negrito({
+  normal({
     doc,
     value: 'DESCRICAO',
     x: 31,
     y: posicao,
     largura: 74.5,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0,
     alinhamento: 'left'
   });
-  negrito({
+  normal({
     doc,
     value: 'UN',
     x: 105,
     y: posicao,
     largura: 15,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0,
     alinhamento: 'center'
   });
-  negrito({
+  normal({
     doc,
     value: 'QTD',
     x: 120,
     y: posicao,
     largura: 20,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0,
     alinhamento: 'center'
   });
-  negrito({
+  normal({
     doc,
     value: 'VL UN',
     x: 140,
     y: posicao,
     largura: 27,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0,
     alinhamento: 'center'
   });
-  negrito({
+  normal({
     doc,
     value: 'VL TOTAL',
     x: 167,
     y: posicao,
     largura: larguraPagina - 167,
-    tamanho: 8,
+    tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
     margemTopo: 0,
     alinhamento: 'center'
   });
+
+  linha(doc);
+
   det.forEach((element) => {
     posicao = doc.y;
     normal({
@@ -225,20 +284,24 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     });
     normal({
       doc,
-      value: formatNumber(element.prod.vProd, 2),
+      value: MoneyMaskBR(+element.prod.vProd),
       x: 167,
       y: posicao,
       largura: larguraPagina - 167,
       tamanho: 6,
-      ajusteX: 0,
+      ajusteX: -margemPadrao,
       ajusteY: 0,
       margemEsquerda: 0,
       margemTopo: 0,
-      alinhamento: 'center'
+      alinhamento: 'right'
     });
     posicao += 7;
   });
-  doc.y += 2;
+
+  doc.y += 10
+
+  linha(doc);
+
   normal({
     doc,
     value: 'Quantidade Total de Itens',
@@ -282,7 +345,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y -= 7;
   normal({
     doc,
-    value: formatNumber(total.ICMSTot.vProd, 2),
+    value: MoneyMaskBR(+total.ICMSTot.vProd),
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -309,7 +372,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y -= 7;
   normal({
     doc,
-    value: formatNumber(total.ICMSTot.vDesc, 2),
+    value: MoneyMaskBR(+total.ICMSTot.vDesc),
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -336,7 +399,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y -= 7;
   normal({
     doc,
-    value: formatNumber(total.ICMSTot.vFrete, 2),
+    value: MoneyMaskBR(+total.ICMSTot.vFrete),
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -363,7 +426,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y -= 7;
   normal({
     doc,
-    value: formatNumber(total.ICMSTot.vNF, 2),
+    value: MoneyMaskBR(+total.ICMSTot.vNF),
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -375,6 +438,9 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     alinhamento: 'right'
   });
   doc.y += 5;
+
+  linha(doc)
+
   normal({
     doc,
     value: 'FORMA DE PAGAMENTO',
@@ -419,7 +485,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     doc.y -= 7;
     normal({
       doc,
-      value: formatNumber(element.vPag, 2),
+      value: MoneyMaskBR(+element.vPag),
       x: 0,
       y: doc.y,
       largura: larguraPagina - margemPadrao,
@@ -447,7 +513,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   doc.y -= 7;
   normal({
     doc,
-    value: formatNumber(pag.vTroco ?? 0, 2),
+    value: MoneyMaskBR(Number(pag.vTroco ?? 0)),
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -458,7 +524,10 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     margemTopo: 0,
     alinhamento: 'right'
   });
-  doc.y += 7;
+  doc.y += 5;
+
+  linha(doc);
+
   negrito({
     doc,
     value: 'Consulte pela chave de acesso em',
@@ -503,50 +572,7 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   normal({
     doc,
     value: dest?.xNome !== undefined ? dest.xNome : 'CONSUMIDOR NAO IDENTIFICADO',
-    x: margemPadrao,
-    y: doc.y,
-    largura: larguraPagina - margemPadrao,
-    tamanho: 7,
-    ajusteX: 0,
-    ajusteY: 0,
-    margemEsquerda: 0,
-    margemTopo: 0,
-    alinhamento: 'justify'
-  });
-  if (dest?.CNPJ !== undefined) {
-    normal({
-      doc,
-      value: 'CNPJ: ' + formatCnpj(dest.CNPJ),
-      x: doc.x,
-      y: doc.y,
-      largura: 112,
-      tamanho: 7,
-      ajusteX: 0,
-      ajusteY: 0,
-      margemEsquerda: 0,
-      margemTopo: 0,
-      alinhamento: 'left'
-    });
-  } else if (dest?.CPF !== undefined) {
-    normal({
-      doc,
-      value: 'CPF: ' + formatCpf(dest.CPF),
-      x: doc.x,
-      y: doc.y,
-      largura: 112,
-      tamanho: 7,
-      ajusteX: 0,
-      ajusteY: 0,
-      margemEsquerda: 0,
-      margemTopo: 0,
-      alinhamento: 'left'
-    });
-  }
-  doc.y += 7;
-  normal({
-    doc,
-    value: `NFC-e Série ${ide.serie} Nº ${ide.nNF} Data Emissão: ${format(parseISO(ide.dhEmi), 'dd/MM/yyyy HH:mm:ss')}`,
-    x: doc.x,
+    x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
     tamanho: 7,
@@ -556,10 +582,40 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     margemTopo: 0,
     alinhamento: 'center'
   });
+  if (dest?.CNPJ !== undefined) {
+    normal({
+      doc,
+      value: 'CNPJ: ' + formatCnpj(dest.CNPJ),
+      x: 0,
+      y: doc.y,
+      largura: 112,
+      tamanho: 7,
+      ajusteX: 0,
+      ajusteY: 0,
+      margemEsquerda: 0,
+      margemTopo: 0,
+      alinhamento: 'center'
+    });
+  } else if (dest?.CPF !== undefined) {
+    normal({
+      doc,
+      value: 'CPF: ' + formatCpf(dest.CPF),
+      x: 0,
+      y: doc.y,
+      largura: 112,
+      tamanho: 7,
+      ajusteX: 0,
+      ajusteY: 0,
+      margemEsquerda: 0,
+      margemTopo: 0,
+      alinhamento: 'center'
+    });
+  }
+  doc.y += 7;
   normal({
     doc,
-    value: 'Consulta via Leitor QR Code',
-    x: margemPadrao,
+    value: `Série: ${ide.serie}, Número: ${ide.nNF}, Data Emissão: ${format(parseISO(ide.dhEmi), 'dd/MM/yyyy HH:mm:ss')}`,
+    x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
     tamanho: 7,
@@ -572,33 +628,6 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
   normal({
     doc,
     value: `Protocolo de Autorização: ${infProt.nProt}`,
-    x: doc.x,
-    y: doc.y,
-    largura: larguraPagina - margemPadrao,
-    tamanho: 7,
-    ajusteX: 0,
-    ajusteY: 0,
-    margemEsquerda: 0,
-    margemTopo: 0,
-    alinhamento: 'left'
-  });
-  normal({
-    doc,
-    value: infProt.dhRecbto ? `Data Autorização: ${format(parseISO(infProt.dhRecbto), 'dd/MM/yyyy HH:mm:ss')}` : '',
-    x: doc.x,
-    y: doc.y,
-    largura: 112,
-    tamanho: 7,
-    ajusteX: 0,
-    ajusteY: 0,
-    margemEsquerda: 0,
-    margemTopo: 0,
-    alinhamento: 'left'
-  });
-  doc.y += 7;
-  normal({
-    doc,
-    value: 'Informacoes de interesse do contribuinte:',
     x: 0,
     y: doc.y,
     largura: larguraPagina - margemPadrao,
@@ -606,15 +635,48 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     ajusteX: 0,
     ajusteY: 0,
     margemEsquerda: 0,
+    margemTopo: 0,
+    alinhamento: 'center'
+  });
+  normal({
+    doc,
+    value: infProt.dhRecbto ? `Data Autorização: ${format(parseISO(infProt.dhRecbto), 'dd/MM/yyyy HH:mm:ss')}` : '',
+    x: 0,
+    y: doc.y,
+    largura: larguraPagina - margemPadrao,
+    tamanho: 7,
+    ajusteX: 0,
+    ajusteY: 0,
+    margemEsquerda: 0,
+    margemTopo: 0,
+    alinhamento: 'center'
+  });
+  doc.y += 5;
+
+  const qrImage = await QRCode.toDataURL(NFe.infNFeSupl?.qrCode ?? '');
+  doc.image(qrImage, larguraPagina / 2 - 40, doc.y, { fit: [80, 80], align: 'center' });
+
+  doc.y += 85;
+
+  normal({
+    doc,
+    value: 'Informações de interesse do contribuinte:',
+    x: margemPadrao,
+    y: doc.y,
+    largura: larguraPagina - margemPadrao * 2,
+    tamanho: 7,
+    ajusteX: 0,
+    ajusteY: 0,
+    margemEsquerda: margemPadrao,
     margemTopo: 0,
     alinhamento: 'center'
   });
   normal({
     doc,
     value: infAdic.infCpl ?? '',
-    x: 0,
+    x: margemPadrao,
     y: doc.y,
-    largura: larguraPagina - margemPadrao,
+    largura: larguraPagina - margemPadrao * 2,
     tamanho: 7,
     ajusteX: 0,
     ajusteY: 0,
@@ -622,8 +684,6 @@ export async function pdfNFCe(nf: NFeProc, pathLogo?: string): Promise<PDFKit.PD
     margemTopo: 0,
     alinhamento: 'center'
   });
-  const qrImage = await QRCode.toDataURL(NFe.infNFeSupl?.qrCode ?? '');
-  doc.image(qrImage, larguraPagina / 2 - 45, doc.y, { fit: [90, 90], align: 'center' });
   doc.end();
   return doc;
 }
