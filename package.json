@@ -29,7 +29,8 @@
     "type": "tsc --project tsconfig.json",
     "copy-fonts": "copyfiles -u 1 src/**/*.ttf lib/",
     "test-pdf": "ts-node-dev --respawn --transpile-only ./tests/pdf.test.ts",
-    "test": "ts-node ./tests/pdf.test.ts"
+    "test": "ts-node ./tests/pdf.test.ts",
+    "postinstall": "npm run clean-lib && tsc -p tsconfig.json && npm run copy-fonts"
   },
   "dependencies": {
     "bwip-js": "4.2.0",
