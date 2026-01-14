@@ -1,9 +1,11 @@
+import type PDFDocument from 'pdfkit'
+
 import { deserializeXml } from '../../../application/helpers/xml';
 import type { NFeProc, OpcoesPDF } from '../../../types';
 import { pdfNFCe } from './pdf-NFCe';
 import { pdfNFe } from './pdf-NFe';
 
-export async function gerarPDF(xmlNFe: string, opcoes?: OpcoesPDF): Promise<PDFKit.PDFDocument> {
+export async function gerarPDF(xmlNFe: string, opcoes?: OpcoesPDF): Promise<typeof PDFDocument> {
   const nf = await deserializeXml(xmlNFe);
   const nfeProc = nf.nfeProc as NFeProc;
 

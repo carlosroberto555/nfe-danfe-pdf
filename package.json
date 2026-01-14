@@ -1,6 +1,6 @@
 {
-  "name": "@carlosroberto555/nfe-danfe-pdf",
-  "version": "1.1.0",
+  "name": "@maqplan/nfe-danfe-pdf",
+  "version": "1.1.2",
   "description": "Modulo que auxilia na geração de PDF da Danfe NFe e NFCe.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
