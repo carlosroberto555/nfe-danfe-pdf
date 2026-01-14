@@ -1,6 +1,6 @@
 {
   "name": "@carlosroberto555/nfe-danfe-pdf",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Modulo que auxilia na geração de PDF da Danfe NFe e NFCe.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -25,7 +25,6 @@
     "clean-lib": "npx rimraf lib",
     "build": "npm run clean-lib && tsc -p tsconfig.json && npm run copy-fonts",
     "prettier": "prettier src/**/*.{js,ts} --write",
-    "publish": "npm adduser && npm publish --access public",
     "type": "tsc --project tsconfig.json",
     "copy-fonts": "copyfiles -u 1 src/**/*.ttf lib/",
     "test-pdf": "ts-node-dev --respawn --transpile-only ./tests/pdf.test.ts",
