@@ -1,5 +1,5 @@
 {
-  "name": "nfe-danfe-pdf",
+  "name": "@carlosroberto555/nfe-danfe-pdf",
   "version": "1.0.3",
   "description": "Modulo que auxilia na geração de PDF da Danfe NFe e NFCe.",
   "main": "lib/index.js",
