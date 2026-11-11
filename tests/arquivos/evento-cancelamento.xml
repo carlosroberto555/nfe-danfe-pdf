@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procEventoNFe versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <evento versao="1.00">
+    <infEvento Id="ID1101113526111234567800019055001000001234100001234501">
+      <cOrgao>35</cOrgao>
+      <tpAmb>2</tpAmb>
+      <CNPJ>12345678000190</CNPJ>
+      <chNFe>35261112345678000190550010000012341000012345</chNFe>
+      <dhEvento>2026-11-03T16:40:05-03:00</dhEvento>
+      <tpEvento>110111</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <verEvento>1.00</verEvento>
+      <detEvento versao="1.00">
+        <descEvento>Cancelamento</descEvento>
+        <nProt>135260001234567</nProt>
+        <xJust>Nota fiscal emitida com destinatario incorreto. A operacao nao foi realizada e a mercadoria nao circulou.</xJust>
+      </detEvento>
+    </infEvento>
+  </evento>
+  <retEvento versao="1.00">
+    <infEvento>
+      <tpAmb>2</tpAmb>
+      <cOrgao>35</cOrgao>
+      <cStat>135</cStat>
+      <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+      <chNFe>35261112345678000190550010000012341000012345</chNFe>
+      <tpEvento>110111</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <dhRegEvento>2026-11-03T16:40:12-03:00</dhRegEvento>
+      <nProt>135260009876543</nProt>
+    </infEvento>
+  </retEvento>
+</procEventoNFe>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <NFe>
+    <infNFe Id="NFe35261112345678000190550010000012341000012345" versao="4.00">
+      <ide>
+        <cUF>35</cUF>
+        <mod>55</mod>
+        <serie>1</serie>
+        <nNF>1234</nNF>
+        <dhEmi>2026-11-03T14:22:10-03:00</dhEmi>
+        <tpAmb>1</tpAmb>
+      </ide>
+      <emit>
+        <CNPJ>12345678000190</CNPJ>
+        <xNome>Empresa Exemplo Comercio Ltda</xNome>
+        <enderEmit>
+          <xLgr>Rua das Flores</xLgr>
+          <nro>123</nro>
+          <xBairro>Centro</xBairro>
+          <xMun>Sao Paulo</xMun>
+          <UF>SP</UF>
+          <CEP>01001000</CEP>
+          <fone>1130000000</fone>
+        </enderEmit>
+        <IE>123456789110</IE>
+      </emit>
+      <dest>
+        <CNPJ>98765432000110</CNPJ>
+        <xNome>Cliente Exemplo Ltda</xNome>
+        <enderDest>
+          <xLgr>Av. Paulista</xLgr>
+          <nro>1000</nro>
+          <xBairro>Bela Vista</xBairro>
+          <xMun>Sao Paulo</xMun>
+          <UF>SP</UF>
+          <CEP>01310100</CEP>
+        </enderDest>
+        <IE>987654321000</IE>
+      </dest>
+      <total>
+        <ICMSTot>
+          <vNF>1250.00</vNF>
+        </ICMSTot>
+      </total>
+    </infNFe>
+  </NFe>
+  <protNFe versao="4.00">
+    <infProt>
+      <tpAmb>1</tpAmb>
+      <chNFe>35261112345678000190550010000012341000012345</chNFe>
+      <dhRecbto>2026-11-03T14:22:41-03:00</dhRecbto>
+      <nProt>135260001234567</nProt>
+      <cStat>100</cStat>
+      <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    </infProt>
+  </protNFe>
+</nfeProc>

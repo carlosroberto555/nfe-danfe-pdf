@@ -1,4 +1,4 @@
-import type PDFDocument from 'pdfkit'
+import type PDFDocument from 'pdfkit';
 
 import { deserializeXml } from '../../../application/helpers/xml';
 import type { NFeProc, OpcoesPDF } from '../../../types';
@@ -27,3 +27,5 @@ export async function gerarPDF(xmlNFe: string, opcoes?: OpcoesPDF): Promise<type
     return await pdfNFCe(nfeProc, opcoes?.pathLogo);
   }
 }
+
+export { pdfEvento as gerarPdfEvento } from './pdf-evento';
