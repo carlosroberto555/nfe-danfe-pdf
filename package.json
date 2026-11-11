@@ -28,7 +28,8 @@
     "type": "tsc --project tsconfig.json",
     "copy-fonts": "copyfiles -u 1 src/**/*.ttf lib/",
     "test-pdf": "ts-node-dev --respawn --transpile-only ./tests/pdf.test.ts",
-    "test": "ts-node ./tests/pdf.test.ts"
+    "test": "ts-node ./tests/pdf.test.ts",
+    "test-evento": "ts-node ./tests/pdf-evento.test.ts"
   },
   "dependencies": {
     "bwip-js": "4.2.0",
