@@ -6,7 +6,6 @@ import { pdfNFCe } from './pdf-NFCe';
 import { pdfNFe } from './pdf-NFe';
 
 export async function gerarPDF(xmlNFe: string, opcoes?: OpcoesPDF): Promise<typeof PDFDocument> {
-  // Atributos são necessários para ler xCampo de obsCont/obsFisco (infAdic)
   const nf = await deserializeXml(xmlNFe, { mergeAttrs: true, ignoreAttrs: false, explicitArray: false });
   const nfeProc = nf.nfeProc as NFeProc;
 
