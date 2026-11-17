@@ -6,7 +6,7 @@ import { pdfNFCe } from './pdf-NFCe';
 import { pdfNFe } from './pdf-NFe';
 
 export async function gerarPDF(xmlNFe: string, opcoes?: OpcoesPDF): Promise<typeof PDFDocument> {
-  const nf = await deserializeXml(xmlNFe);
+  const nf = await deserializeXml(xmlNFe, { mergeAttrs: true, ignoreAttrs: false, explicitArray: false });
   const nfeProc = nf.nfeProc as NFeProc;
 
   if (!(nfeProc.NFe.infNFe.det instanceof Array)) {
